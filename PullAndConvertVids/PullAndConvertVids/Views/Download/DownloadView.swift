@@ -113,7 +113,7 @@ struct QualityFormatSection: View {
             Label("Quality & Format", systemImage: "slider.horizontal.3")
                 .font(.headline)
 
-            // Quick presets
+            // Quality presets
             HStack {
                 ForEach([Constants.DownloadQuality.best, .fullHD, .hd], id: \.self) { quality in
                     Button(quality.displayName) {
@@ -122,14 +122,6 @@ struct QualityFormatSection: View {
                     .buttonStyle(.bordered)
                 }
             }
-
-            // Quality picker
-            Picker("Quality", selection: $viewModel.settings.quality) {
-                ForEach(Constants.DownloadQuality.allCases) { quality in
-                    Text(quality.displayName).tag(quality.rawValue)
-                }
-            }
-            .pickerStyle(.menu)
 
             // Audio-only toggle
             Toggle("Audio Only", isOn: $viewModel.settings.isAudioOnly)

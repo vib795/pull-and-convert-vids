@@ -42,13 +42,46 @@ final class BinaryLocator {
 
     /// Locates binary in system paths
     static func locateSystemBinary(_ name: String) -> String? {
-        // Try Homebrew paths first
+        // Try project Build directory first (for local development)
+        let projectPaths = [
+            PathHelpers.expandPath("~/pull-and-convert-vids/Build"),
+            PathHelpers.expandPath("~/Documents/pull-and-convert-vids/Build"),
+            PathHelpers.expandPath("~/Desktop/pull-and-convert-vids/Build")
+        ]
+
+        for path in projectPaths {
+            let binaryPath = "\(path)/\(name)"
+            if PathHelpers.fileExists(at: binaryPath) {
+                return binaryPath
+            }
+        }
+
+        // Try Homebrew paths
         let homebrewPaths = [
             Constants.homebrewAppleSiliconPath,
             Constants.homebrewIntelPath
         ]
 
         for path in homebrewPaths {
+            let binaryPath = "\(path)/\(name)"
+            if PathHelpers.fileExists(at: binaryPath) {
+                return binaryPath
+            }
+        }
+
+        // Try common Go binary paths
+        var goPaths = [
+            PathHelpers.expandPath("~/go/bin"),
+            PathHelpers.expandPath("~/bin"),
+            PathHelpers.expandPath("~/.local/bin")
+        ]
+
+        // Add GOPATH/bin if GOPATH is set
+        if let gopath = ProcessInfo.processInfo.environment["GOPATH"] {
+            goPaths.append("\(gopath)/bin")
+        }
+
+        for path in goPaths {
             let binaryPath = "\(path)/\(name)"
             if PathHelpers.fileExists(at: binaryPath) {
                 return binaryPath
