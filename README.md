@@ -50,50 +50,61 @@ A modern, production-quality macOS application for downloading videos from 1000+
 
 ## Installation
 
-### Option 1: Download Release (Coming Soon)
-Download the latest `.dmg` from the [Releases](https://github.com/vib795/pull-and-convert-vids/releases) page.
+### Prerequisites
 
-### Option 2: Build from Source
+1. **macOS 13.0 (Ventura) or later**
+2. **Xcode 15+** from the Mac App Store
+3. **Homebrew** (https://brew.sh)
 
-#### Prerequisites
-```bash
-# Install Xcode 15+ from the Mac App Store
-xcode-select --install
+### Quick Setup
 
-# Install Homebrew (if not already installed)
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-# Install Go (for building CLI tools)
-brew install go
-
-# Install dependencies
-brew install ffmpeg yt-dlp
-```
-
-#### Build Steps
 ```bash
 # 1. Clone the repository
 git clone https://github.com/vib795/pull-and-convert-vids.git
 cd pull-and-convert-vids
 
-# 2. Initialize submodules
-git submodule update --init --recursive
+# 2. Install required dependencies
+brew install ffmpeg yt-dlp
 
-# 3. Install dependencies (optional if already installed)
-./Scripts/install_dependencies.sh
+# 3. Install CLI tools (easiest approach - using Homebrew)
+brew install vib795/tap/pull-vids vib795/tap/convert-vid
 
-# 4. Build Go CLI tools
-./Scripts/build_tools.sh
-
-# 5. Open in Xcode
+# 4. Open in Xcode
 open PullAndConvertVids/PullAndConvertVids.xcodeproj
 
-# 6. Build and run (⌘R)
+# 5. Build and run (⌘R)
 ```
 
-The build scripts will:
-- Compile `pull-vids` and `convert-vid` as universal binaries (Apple Silicon + Intel)
-- Bundle them inside the app at `PullAndConvertVids.app/Contents/Resources/bin/`
+**That's it!** The app will use the Homebrew-installed binaries automatically.
+
+### Alternative: Build CLI Tools from Source (Optional)
+
+If you want to bundle the CLI tools inside the app:
+
+```bash
+# Initialize submodules (downloads pull-vids and convert-vid source)
+git submodule update --init --recursive
+
+# Install Go (if not already installed)
+brew install go
+
+# Build universal binaries (Apple Silicon + Intel)
+./Scripts/build_tools.sh
+
+# The binaries will be in Build/ directory
+# Xcode will bundle them at: PullAndConvertVids.app/Contents/Resources/bin/
+```
+
+### Verify Installation
+
+After launching the app:
+1. Go to **Settings** → **Binary Management**
+2. Click **Verify Binaries**
+3. All should show green checkmarks:
+   - ✓ pull-vids
+   - ✓ convert-vid
+   - ✓ ffmpeg
+   - ✓ yt-dlp
 
 ## Usage
 
@@ -193,9 +204,27 @@ GitHub Actions workflows automatically:
 
 ## Troubleshooting
 
+### Xcode project won't open or shows parse errors
+```bash
+# Pull the latest version
+git pull origin claude/macos-video-downloader-app-L0uik
+
+# Clean Xcode derived data
+rm -rf ~/Library/Developer/Xcode/DerivedData/PullAndConvertVids-*
+
+# Reopen project
+open PullAndConvertVids/PullAndConvertVids.xcodeproj
+```
+
+### Build errors about missing files
+In Xcode:
+1. Product → Clean Build Folder (⇧⌘K)
+2. Close and reopen the project
+3. Build again (⌘R)
+
 ### "Binary not found" errors
-- **Solution**: Run `./Scripts/build_tools.sh` to build CLI tools
-- **Alternative**: Install via Homebrew: `brew install vib795/tap/pull-vids vib795/tap/convert-vid`
+- **Solution**: Install via Homebrew: `brew install vib795/tap/pull-vids vib795/tap/convert-vid`
+- **Alternative**: Build from source: `./Scripts/build_tools.sh`
 - **Check**: Verify in Settings → Binary Management
 
 ### "ffmpeg not found" or "yt-dlp not found"
