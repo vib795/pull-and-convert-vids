@@ -119,7 +119,7 @@ struct QualityFormatSection: View {
                     Button(quality.displayName) {
                         viewModel.setQualityPreset(quality)
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(viewModel.settings.quality == quality.rawValue ? .borderedProminent : .bordered)
                 }
             }
 

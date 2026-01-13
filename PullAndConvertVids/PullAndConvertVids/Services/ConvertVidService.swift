@@ -14,7 +14,7 @@ final class ConvertVidService {
 
     init(
         processRunner: ProcessRunnerProtocol = ProcessRunner(),
-        binarySource: BinaryLocator.BinarySource = .bundled
+        binarySource: BinaryLocator.BinarySource = .system
     ) {
         self.processRunner = processRunner
         self.binarySource = binarySource
