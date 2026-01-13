@@ -1,0 +1,102 @@
+name: Build
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-go-tools:
+    name: Build Go CLI Tools
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Build pull-vids
+        if: hashFiles('Tools/pull-vids/**') != ''
+        working-directory: Tools/pull-vids
+        run: |
+          GOOS=darwin GOARCH=arm64 go build -o ../../Build/pull-vids-arm64 -ldflags="-s -w" .
+          GOOS=darwin GOARCH=amd64 go build -o ../../Build/pull-vids-amd64 -ldflags="-s -w" .
+          lipo -create -output ../../Build/pull-vids ../../Build/pull-vids-arm64 ../../Build/pull-vids-amd64
+          chmod +x ../../Build/pull-vids
+
+      - name: Build convert-vid
+        if: hashFiles('Tools/convert-video-formats/**') != ''
+        working-directory: Tools/convert-video-formats
+        run: |
+          GOOS=darwin GOARCH=arm64 go build -o ../../Build/convert-vid-arm64 -ldflags="-s -w" .
+          GOOS=darwin GOARCH=amd64 go build -o ../../Build/convert-vid-amd64 -ldflags="-s -w" .
+          lipo -create -output ../../Build/convert-vid ../../Build/convert-vid-arm64 ../../Build/convert-vid-amd64
+          chmod +x ../../Build/convert-vid
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: go-binaries
+          path: Build/*
+          retention-days: 7
+
+  build-macos-app:
+    name: Build macOS App
+    runs-on: macos-14  # macOS Sonoma with Xcode 15
+    needs: build-go-tools
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download Go binaries
+        uses: actions/download-artifact@v4
+        with:
+          name: go-binaries
+          path: Build
+
+      - name: Make binaries executable
+        run: chmod +x Build/*
+
+      - name: Build Xcode project
+        run: |
+          cd PullAndConvertVids
+          xcodebuild -scheme PullAndConvertVids \
+            -configuration Release \
+            -derivedDataPath DerivedData \
+            build
+
+      - name: Archive app
+        run: |
+          cd PullAndConvertVids/DerivedData/Build/Products/Release
+          zip -r ../../../../PullAndConvertVids.app.zip PullAndConvertVids.app
+
+      - name: Upload app
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-app
+          path: PullAndConvertVids/PullAndConvertVids.app.zip
+          retention-days: 7
+
+  test:
+    name: Run Tests
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run tests
+        run: |
+          cd PullAndConvertVids
+          xcodebuild test \
+            -scheme PullAndConvertVids \
+            -destination 'platform=macOS' \
+            -derivedDataPath DerivedData

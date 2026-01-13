@@ -1,0 +1,8 @@
+[submodule "Tools/pull-vids"]
+	path = Tools/pull-vids
+	url = https://github.com/vib795/pull-vids.git
+	branch = main
+[submodule "Tools/convert-video-formats"]
+	path = Tools/convert-video-formats
+	url = https://github.com/vib795/convert-video-formats.git
+	branch = main

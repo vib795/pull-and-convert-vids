@@ -1,0 +1,84 @@
+# Xcode
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcworkspace/xcuserdata/
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.xcarchive
+
+# Swift Package Manager
+.swiftpm/
+.build/
+Packages/
+Package.resolved
+
+# Build artifacts
+Build/
+build/
+*.app
+*.dmg
+*.pkg
+
+# Go
+Tools/*/bin/
+Tools/*/pkg/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Compiled binaries
+*.o
+*.a
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.history/
+
+# Environment
+.env
+.env.local
+*.log
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+
+# Testing
+*.coverage
+*.profraw
+*.profdata
+
+# Generated files
+*.generated.swift
+*.xcassets/*.appiconset/Contents.json.old
