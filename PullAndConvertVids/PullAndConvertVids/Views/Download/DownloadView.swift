@@ -115,20 +115,9 @@ struct QualityFormatSection: View {
 
             // Quality presets
             HStack {
-                Button(Constants.DownloadQuality.best.displayName) {
-                    viewModel.setQualityPreset(.best)
-                }
-                .buttonStyle(viewModel.settings.quality == Constants.DownloadQuality.best.rawValue ? BorderedProminentButtonStyle() : BorderedButtonStyle())
-
-                Button(Constants.DownloadQuality.fullHD.displayName) {
-                    viewModel.setQualityPreset(.fullHD)
-                }
-                .buttonStyle(viewModel.settings.quality == Constants.DownloadQuality.fullHD.rawValue ? BorderedProminentButtonStyle() : BorderedButtonStyle())
-
-                Button(Constants.DownloadQuality.hd.displayName) {
-                    viewModel.setQualityPreset(.hd)
-                }
-                .buttonStyle(viewModel.settings.quality == Constants.DownloadQuality.hd.rawValue ? BorderedProminentButtonStyle() : BorderedButtonStyle())
+                qualityButton(.best)
+                qualityButton(.fullHD)
+                qualityButton(.hd)
             }
 
             // Audio-only toggle
@@ -156,6 +145,21 @@ struct QualityFormatSection: View {
                 }
                 .pickerStyle(.segmented)
             }
+        }
+    }
+
+    @ViewBuilder
+    private func qualityButton(_ quality: Constants.DownloadQuality) -> some View {
+        if viewModel.settings.quality == quality.rawValue {
+            Button(quality.displayName) {
+                viewModel.setQualityPreset(quality)
+            }
+            .buttonStyle(.borderedProminent)
+        } else {
+            Button(quality.displayName) {
+                viewModel.setQualityPreset(quality)
+            }
+            .buttonStyle(.bordered)
         }
     }
 }
