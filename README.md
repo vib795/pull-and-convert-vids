@@ -43,7 +43,7 @@ A modern, production-quality macOS application for downloading videos from 1000+
 
 ## Requirements
 
-- **macOS 13.0 (Ventura) or later**
+- **macOS 14.0 (Sonoma) or later**
 - **Required dependencies** (auto-detected by the app):
   - `ffmpeg` - Media processing ([install via Homebrew](https://formulae.brew.sh/formula/ffmpeg))
   - `yt-dlp` - Video downloading backend ([install via Homebrew](https://formulae.brew.sh/formula/yt-dlp))
@@ -52,7 +52,7 @@ A modern, production-quality macOS application for downloading videos from 1000+
 
 ### Prerequisites
 
-1. **macOS 13.0 (Ventura) or later**
+1. **macOS 14.0 (Sonoma) or later**
 2. **Xcode 15+** from the Mac App Store
 3. **Homebrew** (https://brew.sh)
 
