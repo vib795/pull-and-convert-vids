@@ -10,18 +10,15 @@ import SwiftData
 
 struct HistoryView: View {
     @StateObject var viewModel: HistoryViewModel
-    @Query(
-        filter: #Predicate<Job> {
-            $0.statusRaw == JobStatus.success.rawValue ||
-            $0.statusRaw == JobStatus.failed.rawValue ||
-            $0.statusRaw == JobStatus.canceled.rawValue
-        },
-        sort: [SortDescriptor(\Job.completedAt, order: .reverse)]
-    ) private var jobs: [Job]
     @State private var selectedJob: Job?
     @State private var showLogs = false
 
     var body: some View {
+        let completedJobs = viewModel.completedJobs
+        let filteredJobs = viewModel.filteredJobs
+        let isEmpty = filteredJobs.isEmpty
+        let noCompletedJobs = completedJobs.isEmpty
+
         VStack(spacing: 0) {
             // Toolbar
             HistoryToolbar(viewModel: viewModel)
@@ -34,8 +31,8 @@ struct HistoryView: View {
             Divider()
 
             // Job List
-            if viewModel.filteredJobs.isEmpty {
-                if jobs.isEmpty {
+            if isEmpty {
+                if noCompletedJobs {
                     EmptyStateView(
                         icon: "clock.arrow.circlepath",
                         title: "No History",
@@ -49,7 +46,7 @@ struct HistoryView: View {
                     )
                 }
             } else {
-                List(viewModel.filteredJobs) { job in
+                List(filteredJobs) { job in
                     HistoryItemRow(job: job, viewModel: viewModel)
                         .contextMenu {
                             HistoryJobContextMenu(job: job, viewModel: viewModel, selectedJob: $selectedJob, showLogs: $showLogs)
