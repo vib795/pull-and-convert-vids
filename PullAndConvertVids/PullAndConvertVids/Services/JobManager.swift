@@ -45,8 +45,9 @@ final class JobManager: ObservableObject {
         guard activeJobCount < maxConcurrentJobs else { return }
 
         // Fetch next queued job
+        let queuedStatus = JobStatus.queued.rawValue
         let descriptor = FetchDescriptor<Job>(
-            predicate: #Predicate { $0.statusRaw == JobStatus.queued.rawValue },
+            predicate: #Predicate { $0.statusRaw == queuedStatus },
             sortBy: [SortDescriptor(\.createdAt)]
         )
 
@@ -292,8 +293,9 @@ final class JobManager: ObservableObject {
     }
 
     func retryFailed() {
+        let failedStatus = JobStatus.failed.rawValue
         let descriptor = FetchDescriptor<Job>(
-            predicate: #Predicate { $0.statusRaw == JobStatus.failed.rawValue }
+            predicate: #Predicate { $0.statusRaw == failedStatus }
         )
 
         if let jobs = try? modelContext.fetch(descriptor) {
@@ -304,10 +306,12 @@ final class JobManager: ObservableObject {
     }
 
     func clearCompleted() {
+        let successStatus = JobStatus.success.rawValue
+        let canceledStatus = JobStatus.canceled.rawValue
         let descriptor = FetchDescriptor<Job>(
             predicate: #Predicate {
-                $0.statusRaw == JobStatus.success.rawValue ||
-                $0.statusRaw == JobStatus.canceled.rawValue
+                $0.statusRaw == successStatus ||
+                $0.statusRaw == canceledStatus
             }
         )
 
