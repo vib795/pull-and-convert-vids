@@ -10,17 +10,12 @@ import SwiftData
 
 struct QueueView: View {
     @StateObject var viewModel: QueueViewModel
-    @Query(
-        filter: #Predicate<Job> {
-            $0.statusRaw == JobStatus.queued.rawValue ||
-            $0.statusRaw == JobStatus.running.rawValue
-        },
-        sort: \Job.createdAt
-    ) private var jobs: [Job]
     @State private var selectedJob: Job?
     @State private var showLogs = false
 
     var body: some View {
+        let jobs = viewModel.queuedAndRunningJobs
+
         VStack(spacing: 0) {
             // Toolbar
             QueueToolbar(viewModel: viewModel, jobCount: jobs.count)

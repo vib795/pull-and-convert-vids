@@ -26,11 +26,14 @@ final class HistoryViewModel: ObservableObject {
     // MARK: - Fetch
 
     var completedJobs: [Job] {
+        let successStatus = JobStatus.success.rawValue
+        let failedStatus = JobStatus.failed.rawValue
+        let canceledStatus = JobStatus.canceled.rawValue
         let descriptor = FetchDescriptor<Job>(
             predicate: #Predicate {
-                $0.statusRaw == JobStatus.success.rawValue ||
-                $0.statusRaw == JobStatus.failed.rawValue ||
-                $0.statusRaw == JobStatus.canceled.rawValue
+                $0.statusRaw == successStatus ||
+                $0.statusRaw == failedStatus ||
+                $0.statusRaw == canceledStatus
             },
             sortBy: [SortDescriptor(\.completedAt, order: .reverse)]
         )

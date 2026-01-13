@@ -24,10 +24,12 @@ final class QueueViewModel: ObservableObject {
     // MARK: - Fetch
 
     var queuedAndRunningJobs: [Job] {
+        let queuedStatus = JobStatus.queued.rawValue
+        let runningStatus = JobStatus.running.rawValue
         let descriptor = FetchDescriptor<Job>(
             predicate: #Predicate {
-                $0.statusRaw == JobStatus.queued.rawValue ||
-                $0.statusRaw == JobStatus.running.rawValue
+                $0.statusRaw == queuedStatus ||
+                $0.statusRaw == runningStatus
             },
             sortBy: [SortDescriptor(\.createdAt)]
         )
