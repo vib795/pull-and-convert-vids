@@ -42,55 +42,47 @@ final class BinaryLocator {
 
     /// Locates binary in system paths
     static func locateSystemBinary(_ name: String) -> String? {
-        // Try project Build directory first (for local development)
-        let projectPaths = [
-            PathHelpers.expandPath("~/pull-and-convert-vids/Build"),
-            PathHelpers.expandPath("~/Documents/pull-and-convert-vids/Build"),
-            PathHelpers.expandPath("~/Desktop/pull-and-convert-vids/Build")
-        ]
-
-        for path in projectPaths {
-            let binaryPath = "\(path)/\(name)"
-            if PathHelpers.fileExists(at: binaryPath) {
-                return binaryPath
-            }
+        // Try PATH environment variable FIRST (most reliable)
+        if let pathBinary = locateInPath(name) {
+            return pathBinary
         }
 
-        // Try Homebrew paths
+        // Try Homebrew paths explicitly
         let homebrewPaths = [
-            Constants.homebrewAppleSiliconPath,
-            Constants.homebrewIntelPath
+            "/opt/homebrew/bin/\(name)",
+            "/usr/local/bin/\(name)"
         ]
 
-        for path in homebrewPaths {
-            let binaryPath = "\(path)/\(name)"
+        for binaryPath in homebrewPaths {
             if PathHelpers.fileExists(at: binaryPath) {
                 return binaryPath
             }
         }
 
         // Try common Go binary paths
-        var goPaths = [
-            PathHelpers.expandPath("~/go/bin"),
-            PathHelpers.expandPath("~/bin"),
-            PathHelpers.expandPath("~/.local/bin")
+        let goPaths = [
+            PathHelpers.expandPath("~/go/bin/\(name)"),
+            PathHelpers.expandPath("~/bin/\(name)"),
+            PathHelpers.expandPath("~/.local/bin/\(name)")
         ]
 
-        // Add GOPATH/bin if GOPATH is set
-        if let gopath = ProcessInfo.processInfo.environment["GOPATH"] {
-            goPaths.append("\(gopath)/bin")
-        }
-
-        for path in goPaths {
-            let binaryPath = "\(path)/\(name)"
+        for binaryPath in goPaths {
             if PathHelpers.fileExists(at: binaryPath) {
                 return binaryPath
             }
         }
 
-        // Try PATH environment variable
-        if let pathBinary = locateInPath(name) {
-            return pathBinary
+        // Try project Build directory (for local development)
+        let projectPaths = [
+            PathHelpers.expandPath("~/pull-and-convert-vids/Build/\(name)"),
+            PathHelpers.expandPath("~/Documents/pull-and-convert-vids/Build/\(name)"),
+            PathHelpers.expandPath("~/Desktop/pull-and-convert-vids/Build/\(name)")
+        ]
+
+        for binaryPath in projectPaths {
+            if PathHelpers.fileExists(at: binaryPath) {
+                return binaryPath
+            }
         }
 
         return nil
@@ -101,6 +93,19 @@ final class BinaryLocator {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/which")
         process.arguments = [name]
+
+        // Set PATH environment to include Homebrew
+        var environment = ProcessInfo.processInfo.environment
+        let pathComponents = [
+            "/opt/homebrew/bin",
+            "/usr/local/bin",
+            "/usr/bin",
+            "/bin",
+            "/usr/sbin",
+            "/sbin"
+        ]
+        environment["PATH"] = pathComponents.joined(separator: ":")
+        process.environment = environment
 
         let pipe = Pipe()
         process.standardOutput = pipe
