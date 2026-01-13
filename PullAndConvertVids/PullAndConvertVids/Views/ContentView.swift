@@ -136,13 +136,13 @@ enum NavigationItem: String, CaseIterable {
         }
     }
 
-    var shortcut: KeyEquivalent? {
+    var shortcut: KeyboardShortcut? {
         switch self {
-        case .download: return "d"
-        case .convert: return "k"
-        case .queue: return "q"
-        case .history: return "h"
-        case .settings: return ","
+        case .download: return KeyboardShortcut("d")
+        case .convert: return KeyboardShortcut("k")
+        case .queue: return KeyboardShortcut("q")
+        case .history: return KeyboardShortcut("h")
+        case .settings: return KeyboardShortcut(",")
         case .diagnostics: return nil
         }
     }
