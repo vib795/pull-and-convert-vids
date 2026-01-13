@@ -116,10 +116,11 @@ struct QualityFormatSection: View {
             // Quality presets
             HStack {
                 ForEach([Constants.DownloadQuality.best, .fullHD, .hd], id: \.self) { quality in
+                    let isSelected = viewModel.settings.quality == quality.rawValue
                     Button(quality.displayName) {
                         viewModel.setQualityPreset(quality)
                     }
-                    .buttonStyle(viewModel.settings.quality == quality.rawValue ? .borderedProminent : .bordered)
+                    .buttonStyle(isSelected ? BorderedProminentButtonStyle() : BorderedButtonStyle())
                 }
             }
 
