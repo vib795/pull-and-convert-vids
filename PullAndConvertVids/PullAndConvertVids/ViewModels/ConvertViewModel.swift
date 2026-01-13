@@ -20,7 +20,7 @@ final class ConvertViewModel: ObservableObject {
     private let modelContext: ModelContext
     private let jobManager: JobManager
 
-    enum OutputLocation {
+    enum OutputLocation: Hashable {
         case sameFolder
         case chooseFolder(String)
 

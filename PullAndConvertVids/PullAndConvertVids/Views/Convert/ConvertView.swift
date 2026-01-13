@@ -181,22 +181,27 @@ struct OutputLocationSection: View {
             Label("Output Location", systemImage: "folder")
                 .font(.headline)
 
-            Picker("Save to", selection: $viewModel.outputLocationChoice) {
-                Text("Same folder as input").tag(ConvertViewModel.OutputLocation.sameFolder)
-            }
-            .pickerStyle(.radioGroup)
-
             HStack {
                 Text(viewModel.outputLocationChoice.displayName)
                     .foregroundStyle(.secondary)
 
                 Spacer()
 
-                Button("Choose Folder...") {
-                    viewModel.selectOutputFolder()
+                if case .sameFolder = viewModel.outputLocationChoice {
+                    Button("Choose Folder...") {
+                        viewModel.selectOutputFolder()
+                    }
+                    .buttonStyle(.bordered)
+                } else {
+                    Button("Use Same Folder") {
+                        viewModel.outputLocationChoice = .sameFolder
+                    }
+                    .buttonStyle(.bordered)
                 }
-                .buttonStyle(.bordered)
             }
+            .padding(12)
+            .background(Color.gray.opacity(0.05))
+            .cornerRadius(6)
         }
     }
 }
