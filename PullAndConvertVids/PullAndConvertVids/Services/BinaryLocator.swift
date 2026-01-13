@@ -121,8 +121,6 @@ final class BinaryLocator {
             process.standardOutput = pipe
             process.standardError = pipe
 
-            var output = ""
-
             // Timeout handler
             let timeoutTask = Task {
                 try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
@@ -136,9 +134,11 @@ final class BinaryLocator {
                 timeoutTask.cancel()
                 let data = pipe.fileHandleForReading.readDataToEndOfFile()
                 if let result = String(data: data, encoding: .utf8) {
-                    output = result.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let output = result.trimmingCharacters(in: .whitespacesAndNewlines)
+                    continuation.resume(returning: output.isEmpty ? nil : output)
+                } else {
+                    continuation.resume(returning: nil)
                 }
-                continuation.resume(returning: output.isEmpty ? nil : output)
             }
 
             do {

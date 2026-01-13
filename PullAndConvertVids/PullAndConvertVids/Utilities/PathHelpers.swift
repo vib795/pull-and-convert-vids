@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppKit
 
 enum PathHelpers {
     /// Expands tilde (~) in path and resolves to absolute path

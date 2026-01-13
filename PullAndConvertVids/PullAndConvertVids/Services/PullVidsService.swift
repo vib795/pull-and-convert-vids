@@ -49,7 +49,6 @@ final class PullVidsService {
         logCallback("$ \(command)\n")
 
         var outputPath: String?
-        var lastProgress: DownloadProgress?
 
         // Execute process
         let handle = processRunner.run(
@@ -60,7 +59,6 @@ final class PullVidsService {
 
                 // Parse progress
                 if let progress = ProgressParser.parseDownloadProgress(line) {
-                    lastProgress = progress
                     progressCallback(progress)
                 }
 
@@ -74,7 +72,6 @@ final class PullVidsService {
 
                 // Parse progress from stderr too (yt-dlp sometimes uses stderr)
                 if let progress = ProgressParser.parseDownloadProgress(line) {
-                    lastProgress = progress
                     progressCallback(progress)
                 }
             },
