@@ -115,13 +115,20 @@ struct QualityFormatSection: View {
 
             // Quality presets
             HStack {
-                ForEach([Constants.DownloadQuality.best, .fullHD, .hd], id: \.self) { quality in
-                    let isSelected = viewModel.settings.quality == quality.rawValue
-                    Button(quality.displayName) {
-                        viewModel.setQualityPreset(quality)
-                    }
-                    .buttonStyle(isSelected ? BorderedProminentButtonStyle() : BorderedButtonStyle())
+                Button(Constants.DownloadQuality.best.displayName) {
+                    viewModel.setQualityPreset(.best)
                 }
+                .buttonStyle(viewModel.settings.quality == Constants.DownloadQuality.best.rawValue ? BorderedProminentButtonStyle() : BorderedButtonStyle())
+
+                Button(Constants.DownloadQuality.fullHD.displayName) {
+                    viewModel.setQualityPreset(.fullHD)
+                }
+                .buttonStyle(viewModel.settings.quality == Constants.DownloadQuality.fullHD.rawValue ? BorderedProminentButtonStyle() : BorderedButtonStyle())
+
+                Button(Constants.DownloadQuality.hd.displayName) {
+                    viewModel.setQualityPreset(.hd)
+                }
+                .buttonStyle(viewModel.settings.quality == Constants.DownloadQuality.hd.rawValue ? BorderedProminentButtonStyle() : BorderedButtonStyle())
             }
 
             // Audio-only toggle
