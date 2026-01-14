@@ -41,7 +41,7 @@ struct QueueView: View {
         .navigationTitle("Queue")
         .sheet(isPresented: $showLogs) {
             if let job = selectedJob {
-                LogViewerView(job: job)
+                LogViewerView(jobId: job.id)
             }
         }
     }
