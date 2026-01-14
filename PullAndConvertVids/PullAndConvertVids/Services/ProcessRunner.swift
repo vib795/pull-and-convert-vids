@@ -44,6 +44,20 @@ final class ProcessRunner: ProcessRunnerProtocol {
             process.executableURL = URL(fileURLWithPath: binary)
             process.arguments = arguments
 
+            // Set environment with full PATH so tools can find dependencies
+            var environment = ProcessInfo.processInfo.environment
+            let pathComponents = [
+                "/opt/homebrew/bin",
+                "/usr/local/bin",
+                "/usr/bin",
+                "/bin",
+                "/usr/sbin",
+                "/sbin",
+                "/opt/homebrew/sbin"
+            ]
+            environment["PATH"] = pathComponents.joined(separator: ":")
+            process.environment = environment
+
             // Setup pipes for streaming output
             let outputPipe = Pipe()
             let errorPipe = Pipe()
