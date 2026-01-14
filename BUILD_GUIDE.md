@@ -4,7 +4,7 @@
 
 ### Prerequisites
 
-1. **macOS with Xcode 15+** installed
+1. **macOS with Xcode 15+** installed from Mac App Store
 2. **CLI tools** (pull-vids, convert-vid) available:
    ```bash
    brew install vib795/tap/pull-vids vib795/tap/convert-vid
@@ -14,10 +14,46 @@
    brew install ffmpeg yt-dlp
    ```
 
+---
+
+## Method 1: Xcode GUI Build (Recommended - Easiest)
+
+### Step 1: Build the App in Xcode
+
+1. **Open the project:**
+   ```bash
+   open PullAndConvertVids/PullAndConvertVids.xcodeproj
+   ```
+
+2. **Select build destination:**
+   - At the top of Xcode, click the destination dropdown
+   - Select **"Any Mac (Apple Silicon, Intel)"**
+
+3. **Build the Release version:**
+   - Menu: **Product → Build** (⌘B)
+   - Wait for build to complete (watch progress bar)
+
+### Step 2: Package into DMG
+
+```bash
+# Simple packaging script (works without xcodebuild CLI)
+./Scripts/package_dmg.sh
+```
+
+The DMG will be created at: `Build/Pull-and-Convert-Vids-1.0.0.dmg`
+
+**That's it!** ✅
+
+---
+
+## Method 2: Command-Line Build (Advanced)
+
+**Note:** Requires full Xcode installed (not just Command Line Tools)
+
 ### Quick Build
 
 ```bash
-# One-command build
+# One-command automated build
 ./Scripts/build_dmg.sh
 ```
 
