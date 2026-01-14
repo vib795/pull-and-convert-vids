@@ -6,7 +6,8 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
-APP_NAME="Pull and Convert Vids"
+APP_BUNDLE_NAME="PullAndConvertVids"  # The actual .app bundle name
+APP_DISPLAY_NAME="Pull and Convert Vids"  # The display name users see
 DMG_NAME="Pull-and-Convert-Vids"
 VERSION="1.0.0"
 
@@ -16,25 +17,25 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-echo "💿 Creating DMG for $APP_NAME"
+echo "💿 Creating DMG for $APP_DISPLAY_NAME"
 echo "=============================="
 
 # Find the built app
 APP_PATH=""
 
 # Check common build locations
-if [ -d "$PROJECT_ROOT/PullAndConvertVids/build/Release/$APP_NAME.app" ]; then
-    APP_PATH="$PROJECT_ROOT/PullAndConvertVids/build/Release/$APP_NAME.app"
-elif [ -d "$PROJECT_ROOT/Build/Products/Release/$APP_NAME.app" ]; then
-    APP_PATH="$PROJECT_ROOT/Build/Products/Release/$APP_NAME.app"
+if [ -d "$PROJECT_ROOT/PullAndConvertVids/build/Release/$APP_BUNDLE_NAME.app" ]; then
+    APP_PATH="$PROJECT_ROOT/PullAndConvertVids/build/Release/$APP_BUNDLE_NAME.app"
+elif [ -d "$PROJECT_ROOT/Build/Products/Release/$APP_BUNDLE_NAME.app" ]; then
+    APP_PATH="$PROJECT_ROOT/Build/Products/Release/$APP_BUNDLE_NAME.app"
 else
     # Search in DerivedData (where Xcode ⌘B builds to)
     echo "🔍 Searching in Xcode DerivedData..."
-    APP_PATH=$(find "$HOME/Library/Developer/Xcode/DerivedData" -name "$APP_NAME.app" -path "*/Build/Products/Release/*" -print -quit 2>/dev/null)
+    APP_PATH=$(find "$HOME/Library/Developer/Xcode/DerivedData" -name "$APP_BUNDLE_NAME.app" -path "*/Build/Products/Release/*" -print -quit 2>/dev/null)
 
     # If not found in Release, try Debug
     if [ -z "$APP_PATH" ]; then
-        APP_PATH=$(find "$HOME/Library/Developer/Xcode/DerivedData" -name "$APP_NAME.app" -path "*/Build/Products/Debug/*" -print -quit 2>/dev/null)
+        APP_PATH=$(find "$HOME/Library/Developer/Xcode/DerivedData" -name "$APP_BUNDLE_NAME.app" -path "*/Build/Products/Debug/*" -print -quit 2>/dev/null)
         if [ -n "$APP_PATH" ]; then
             echo -e "${YELLOW}⚠ Found Debug build (use Release for distribution)${NC}"
         fi
@@ -81,7 +82,7 @@ DMG_OUTPUT="$PROJECT_ROOT/Build/$DMG_NAME-$VERSION.dmg"
 rm -f "$DMG_OUTPUT"
 
 hdiutil create \
-    -volname "$APP_NAME" \
+    -volname "$APP_DISPLAY_NAME" \
     -srcfolder "$DMG_DIR" \
     -ov \
     -format UDZO \
@@ -106,5 +107,5 @@ echo "  open $DMG_OUTPUT"
 echo ""
 echo "To install:"
 echo "  1. Open the DMG"
-echo "  2. Drag '$APP_NAME.app' to Applications folder"
+echo "  2. Drag '$APP_DISPLAY_NAME.app' to Applications folder"
 echo "  3. Launch from Applications"
