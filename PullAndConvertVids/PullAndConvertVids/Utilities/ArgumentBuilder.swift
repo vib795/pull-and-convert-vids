@@ -62,10 +62,6 @@ enum ArgumentBuilder {
             }
         }
 
-        // Progress and newline flags for parsing
-        args.append("--newline")
-        args.append("--progress")
-
         // No banner for cleaner output
         args.append("--no-banner")
 
