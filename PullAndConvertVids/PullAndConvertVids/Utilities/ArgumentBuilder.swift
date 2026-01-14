@@ -95,8 +95,25 @@ enum ArgumentBuilder {
 
         // Output path (if specified)
         if let output = settings.outputPath {
-            args.append("-o")
-            args.append(PathHelpers.expandPath(output))
+            let expandedOutput = PathHelpers.expandPath(output)
+
+            // If output is a directory, construct full output file path
+            if PathHelpers.isDirectory(at: expandedOutput) {
+                // Get input filename without extension
+                let inputURL = URL(fileURLWithPath: PathHelpers.expandPath(input))
+                let inputName = inputURL.deletingPathExtension().lastPathComponent
+
+                // Construct output file path with new extension
+                let outputFileName = "\(inputName).\(settings.format)"
+                let outputFilePath = URL(fileURLWithPath: expandedOutput).appendingPathComponent(outputFileName).path
+
+                args.append("-o")
+                args.append(outputFilePath)
+            } else {
+                // Output is a file path, use as-is
+                args.append("-o")
+                args.append(expandedOutput)
+            }
         }
 
         // Overwrite flag
